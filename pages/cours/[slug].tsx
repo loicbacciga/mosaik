@@ -3,13 +3,13 @@ import {
   Button,
   Heading,
   HStack,
-  SimpleGrid,
   Text,
   VStack,
   Wrap,
 } from "@chakra-ui/react";
 import { PortableText } from "@portabletext/react";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import ErrorPage from "next/error";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FiMail } from "react-icons/fi";
@@ -30,12 +30,13 @@ interface CoursProps {
 const Cours: NextPage<CoursProps> = ({ cours: initialCours, preview }) => {
   const router = useRouter();
 
-  const slug = initialCours.slug;
+  const slug = initialCours?.slug;
   const { data: cours } = usePreviewSubscription(lectureQuery, {
     params: { slug },
     initialData: initialCours,
-    enabled: preview,
+    enabled: preview && initialCours !== undefined,
   });
+  console.log("TST", slug, cours)
 
   const [partenaires, setPartenaires] = useState([] as Partenaire[]);
   const [usedPartenaires, setUsedPartenaires] = useState([] as Partenaire[]);
@@ -46,7 +47,7 @@ const Cours: NextPage<CoursProps> = ({ cours: initialCours, preview }) => {
   }, []);
 
   useEffect(() => {
-    if (!cours.partenaires) return;
+    if (!cours || !cours.partenaires) return;
 
     setUsedPartenaires(
       partenaires.filter((p) =>
@@ -54,6 +55,11 @@ const Cours: NextPage<CoursProps> = ({ cours: initialCours, preview }) => {
       )
     );
   }, [partenaires, cours]);
+
+  
+  if ((!router.isFallback && !initialCours) || !cours) {
+    return <ErrorPage statusCode={404} />;
+  }
 
   return (
     <Layout preview={preview}>
