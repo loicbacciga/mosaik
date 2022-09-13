@@ -36,7 +36,7 @@ const Cours: NextPage<CoursProps> = ({ cours: initialCours, preview }) => {
     initialData: initialCours,
     enabled: preview && initialCours !== undefined,
   });
-  console.log("TST", slug, cours)
+  console.log("TST", slug, cours);
 
   const [partenaires, setPartenaires] = useState([] as Partenaire[]);
   const [usedPartenaires, setUsedPartenaires] = useState([] as Partenaire[]);
@@ -56,7 +56,6 @@ const Cours: NextPage<CoursProps> = ({ cours: initialCours, preview }) => {
     );
   }, [partenaires, cours]);
 
-  
   if ((!router.isFallback && !initialCours) || !cours) {
     return <ErrorPage statusCode={404} />;
   }
@@ -119,7 +118,8 @@ export const getStaticProps: GetStaticProps = async ({
       cours,
     },
     // If webhooks isn't setup then attempt to re-generate in 1 minute intervals
-    revalidate: process.env.SANITY_REVALIDATE_SECRET ? undefined : 60,
+    //revalidate: process.env.SANITY_REVALIDATE_SECRET ? undefined : 60,
+    revalidate: 60,
   };
 };
 
